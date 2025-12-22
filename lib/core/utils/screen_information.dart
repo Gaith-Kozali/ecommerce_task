@@ -33,10 +33,9 @@ double getRealWidth(BuildContext context) {
 double getAvailableHeight(BuildContext context, [PreferredSizeWidget? appBar]) {
   double appBarHeight = appBar != null ? appBar.preferredSize.height : 0;
 
-    return MediaQuery.of(context).size.height -
-        MediaQuery.of(context).padding.vertical -
-        appBarHeight;
-
+  return MediaQuery.of(context).size.height -
+      MediaQuery.of(context).padding.vertical -
+      appBarHeight;
 }
 
 Orientation getScreenOrientation(BuildContext context) {
@@ -51,3 +50,6 @@ isThereCurrentDialogShowing(BuildContext context) {
   return ModalRoute.of(context)?.isCurrent != true;
 }
 
+void openDrawerFunc(BuildContext context) {
+  Scaffold.of(context).openDrawer();
+}

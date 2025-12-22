@@ -39,7 +39,7 @@ class _AuthButtonState extends State<AuthButton> {
         onTapUp: (_) => setState(() => _pressed = false),
         onTapCancel: () => setState(() => _pressed = false),
         child: AnimatedScale(
-          scale: _pressed ? 0.98 : (_hovered ? 1.01 : 1.0),
+          scale: _pressed ? 0.98 : (_hovered ? 1.02 : 1.0),
           duration: Duration(milliseconds: 150),
           child: Container(
             width: AppSize().textFieldWidth,

@@ -4,3 +4,9 @@ enum StatusAPI {
   success,
   error,
 }
+
+enum ScreenType {
+  mobile,
+  tablet,
+  desktop,
+}

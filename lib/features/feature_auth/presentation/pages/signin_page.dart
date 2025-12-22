@@ -7,6 +7,7 @@ import 'package:ecommerce_task/core/constants/assets_path.dart';
 import 'package:ecommerce_task/core/utils/screen_information.dart';
 import 'package:ecommerce_task/features/feature_auth/presentation/controllers/auth_bloc.dart';
 import 'package:ecommerce_task/features/feature_auth/presentation/pages/signup_page.dart';
+import 'package:ecommerce_task/features/feature_home/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -205,6 +206,8 @@ class _SignInPageState extends State<SignInPage> {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(SnackBar(content: Text(state.failure.message)));
+              }else if(state is SignInSuccess){
+                context.go(HomePage.route);
               }
             },
           ),
