@@ -34,7 +34,12 @@ class AppSpacing {
   static EdgeInsets get verticalMedium => EdgeInsets.symmetric(vertical: 16.h);
   static EdgeInsets get verticalLarge => EdgeInsets.symmetric(vertical: 24.h);
   static EdgeInsets get pagePadding =>
-      EdgeInsets.symmetric(vertical: 16.h, horizontal: 8.w);
+      EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h);
   static EdgeInsets get navigationBarPadding =>
       EdgeInsets.symmetric(horizontal: 8, vertical: 32.h);
+
+  static EdgeInsets get cardAuthPadding => EdgeInsets.symmetric(
+    vertical: 16.h,
+    horizontal: 8.w,
+  ).copyWith(bottom: 40.h);
 }

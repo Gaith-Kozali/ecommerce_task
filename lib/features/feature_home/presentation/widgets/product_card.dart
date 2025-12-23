@@ -1,6 +1,9 @@
 import 'package:ecommerce_task/core/constants/app_size.dart';
+import 'package:ecommerce_task/features/feature_home/presentation/controllers/cart_controller/cart_cubit.dart';
+import 'package:ecommerce_task/features/feature_home/presentation/controllers/product_controller/product_bloc.dart';
 import 'package:ecommerce_task/features/feature_home/presentation/pages/product_details_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
@@ -20,7 +23,6 @@ class ProductCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           context.push(ProductDetailsPage.route, extra: product);
-
         },
         child: Container(
           decoration: BoxDecoration(
@@ -94,6 +96,39 @@ class ProductCard extends StatelessWidget {
                               Icon(Icons.star_outlined, color: Colors.amber),
                       itemCount: 5,
                       itemSize: appSize.iconMedium,
+                    ),
+                    AppSpacing.columnMedium,
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          BlocProvider.of<CartCubit>(
+                            context,
+                          ).addToCart(product);
+                        },
+                        icon: Icon(
+                          Icons.add_shopping_cart_outlined,
+                          color: AppColor.secondaryText,
+                          size: appSize.iconMedium,
+                        ),
+                        label: Text(
+                          'Add to cart',
+                          style: TextStyle(
+                            color: AppColor.secondaryText,
+                            fontWeight: FontWeight.w600,
+                            fontSize: AppSize().slBodyFontSize,
+                          ),
+                          maxLines: 1,
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColor.primary,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          padding: AppSpacing.allSmall,
+                        ),
+                      ),
                     ),
                   ],
                 ),

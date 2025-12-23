@@ -24,3 +24,12 @@ class SignUpError extends AuthState {
   SignUpError({required this.failure});
   final Failure failure;
 }
+
+class FetchUserInfSuccess extends AuthState {}
+
+class FetchUserInfProgress extends AuthState {}
+
+class FetchUserInfError extends AuthState {
+  FetchUserInfError({required this.failure});
+  final Failure failure;
+}

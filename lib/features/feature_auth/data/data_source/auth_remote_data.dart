@@ -18,16 +18,12 @@ class AuthRemoteData {
     return TokenModel.fromJson(response.data);
   }
 
-  Future<User> signUp(UserModel userModel) async {
-    final response = await networkService.post(
-      AppApi.signUp,
-      data: userModel.toJson(),
-    );
-    return UserModel.fromJson(response.data);
+  Future<void> signUp(UserModel userModel) async {
+    await networkService.post(AppApi.signUp, data: userModel.toJson());
   }
 
-  Future<User> getUserInf(String id) async {
-    final response = await networkService.post(AppApi.getUserDetails(id));
+  Future<User> getUserInf({String id = "1"}) async {
+    final response = await networkService.get(AppApi.getUserDetails(id));
     return UserModel.fromJson(response.data);
   }
 }

@@ -17,7 +17,7 @@ class ProductDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppSize appSize = AppSize();
-    return Scaffold(
+    return SafeArea(child: Scaffold(
       backgroundColor: AppColor.background,
       body: Stack(
         children: [
@@ -104,9 +104,9 @@ class ProductDetailsPage extends StatelessWidget {
                               rating: product.rating,
                               itemBuilder:
                                   (context, index) => const Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
                               itemCount: 5,
                               itemSize: appSize.iconMedium,
                             ),
@@ -157,7 +157,7 @@ class ProductDetailsPage extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ));
   }
 }
 

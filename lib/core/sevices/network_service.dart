@@ -51,9 +51,13 @@ class NetworkService {
     );
   }
 
-  static Failure mapDioError(Object e) {
-    String? statusCode = (e as DioException).response?.statusCode?.toString();
-    String? message = e.message;
-    return Failure(message: message, statusCode: statusCode);
+  static Failure mapDioError(Object error) {
+    if (error is DioException) {
+      return Failure(
+        message: error.message,
+        statusCode: error.response?.statusCode?.toString(),
+      );
+    }
+    return Failure(message: error.toString());
   }
 }

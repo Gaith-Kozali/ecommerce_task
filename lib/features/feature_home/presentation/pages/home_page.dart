@@ -1,7 +1,5 @@
 import 'dart:math';
-
 import 'package:ecommerce_task/core/app_progress_message.dart';
-import 'package:ecommerce_task/core/constants/app_color.dart';
 import 'package:ecommerce_task/core/constants/app_size.dart';
 import 'package:ecommerce_task/core/constants/app_spacing.dart';
 import 'package:ecommerce_task/core/enum.dart';
@@ -11,14 +9,13 @@ import 'package:ecommerce_task/features/feature_auth/presentation/pages/signin_p
 import 'package:ecommerce_task/features/feature_home/presentation/controllers/product_controller/product_bloc.dart';
 import 'package:ecommerce_task/features/feature_home/presentation/widgets/custom_appbar.dart';
 import 'package:ecommerce_task/features/feature_home/presentation/widgets/custom_navigation_bar.dart';
-import 'package:ecommerce_task/features/feature_home/presentation/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../domain/entities/product.dart';
 import '../widgets/animation_product_card.dart';
+import '../widgets/search_bar_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,12 +28,19 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final AppSize appSize = AppSize();
   late ProductBloc _productBloc;
+  late AuthBloc _authBloc;
   bool isDesktop = false;
   @override
   void initState() {
     super.initState();
     _productBloc = BlocProvider.of<ProductBloc>(context);
-    _productBloc.add(FetchAllProduct());
+    _authBloc = BlocProvider.of<AuthBloc>(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _productBloc.add(FetchAllProduct());
+      // if(_authBloc.user ==null){
+      //   _authBloc.add(FetchUserInf());
+      // }
+    });
   }
 
   @override
@@ -48,7 +52,10 @@ class _HomePageState extends State<HomePage> {
           listener:
               (context, state) =>
                   (state.statusAPI == StatusAPI.error)
-                      ? AppProgressMessage.errorMessage()
+                      ? AppProgressMessage.errorSnackMessage(
+                        context,
+                        state.failure!.message,
+                      )
                       : SizedBox(),
         ),
         BlocListener<AuthBloc, AuthState>(
@@ -59,55 +66,45 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       ],
-      child: Scaffold(
-        drawer: CustomNavigationBar(appSize: appSize),
-        body: Row(
-          children: [
-            if (isDesktop) CustomNavigationBar(appSize: appSize),
-            Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  if (!isDesktop) CustomAppbar(appSize: appSize),
-                  BlocBuilder<ProductBloc, ProductState>(
-                    builder: (context, state) {
-                      if (state.statusAPI == StatusAPI.loading) {
-                        return SliverFillRemaining(
-                          child: AppProgressMessage.primaryProgress,
+      child: SafeArea(
+        child: Scaffold(
+          drawer: CustomNavigationBar(appSize: appSize, user: _authBloc.user),
+          body: Row(
+            children: [
+              if (isDesktop)
+                CustomNavigationBar(appSize: appSize, user: _authBloc.user),
+              Expanded(
+                child: CustomScrollView(
+                  slivers: [
+                    if (!isDesktop) CustomAppbar(appSize: appSize),
+                    BlocBuilder<ProductBloc, ProductState>(
+                      builder: (context, state) {
+                        if (state.statusAPI == StatusAPI.loading) {
+                          return SliverFillRemaining(
+                            child: AppProgressMessage.primaryProgress,
+                          );
+                        }
+                        return SliverPadding(
+                          padding: AppSpacing.allMedium,
+                          sliver: SliverList(
+                            delegate: SliverChildListDelegate([
+                              SearchBarWidget(
+                                appSize: appSize,
+                                products: state.products,
+                              ),
+                              AppSpacing.columnLarge,
+                              const SizedBox(height: 12),
+                              _buildProductsGrid(context, state.products),
+                            ]),
+                          ),
                         );
-                      }
-                      return SliverPadding(
-                        padding: AppSpacing.allMedium,
-                        sliver: SliverList(
-                          delegate: SliverChildListDelegate([
-                            _buildSearchBar(),
-                            AppSpacing.columnLarge,
-                            const SizedBox(height: 12),
-                            _buildProductsGrid(context, state.products),
-                          ]),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: 'Search products...',
-        prefixIcon: const Icon(Icons.search),
-        filled: true,
-        fillColor: AppColor.textField,
-        contentPadding: const EdgeInsets.symmetric(vertical: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide.none,
+            ],
+          ),
         ),
       ),
     );
@@ -130,7 +127,12 @@ class _HomePageState extends State<HomePage> {
         crossAxisCount: crossAxisCount,
         mainAxisSpacing: 16,
         crossAxisSpacing: min(16.w, 32),
-        childAspectRatio: 0.7,
+        childAspectRatio:
+            AppBreakpoints.isDesktop(screenWidth)
+                ? 0.7
+                : AppBreakpoints.isTablet(screenWidth)
+                ? 0.6
+                : 0.5,
       ),
       itemBuilder: (context, index) {
         return AnimatedProductCard(

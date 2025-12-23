@@ -13,11 +13,13 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthRepository authRepository;
   AuthLocalData authLocalData;
+  User? user;
   AuthBloc({required this.authRepository, required this.authLocalData})
     : super(AuthNoneState()) {
     on<SignInEvent>(signIn);
     on<SignUpEvent>(signUp);
     on<SignOutEvent>(signOut);
+    on<FetchUserInf>(getUserInf);
   }
   signIn(SignInEvent event, emit) async {
     emit(SignInProgress());
@@ -25,15 +27,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       event.userName,
       event.password,
     );
-    data.fold
-      ((l) => emit(SignInError(failure: l)),
-      (token) async {
-      await authLocalData.saveTokens(
-        accessToken: token.accessToken,
-        refreshToken: token.refreshToken,
-      );
-      emit(SignInSuccess());
-    });
+    data.fold(
+      (l) => emit(SignInError(failure: l)),
+      (user) {
+        this.user= user;
+        emit(SignInSuccess());
+      } ,
+    );
   }
 
   signUp(SignUpEvent event, emit) async {
@@ -54,5 +54,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   signOut(SignOutEvent event, emit) async {
     await authLocalData.clearTokens();
     emit(AuthNoneState());
+  }
+
+  getUserInf(FetchUserInf event, emit) async {
+    emit(FetchUserInfProgress());
+    final result = await authRepository.getUserInfo();
+    result.fold(
+      (failure) => emit(FetchUserInfError(failure: failure)),
+      (userInf) {
+        user = userInf;
+        emit(FetchUserInfSuccess());
+      } ,
+    );
   }
 }

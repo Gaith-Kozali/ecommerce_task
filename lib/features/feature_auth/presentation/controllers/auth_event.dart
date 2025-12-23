@@ -21,3 +21,8 @@ class SignUpEvent extends AuthEvent {
 }
 
 class SignOutEvent extends AuthEvent {}
+
+class FetchUserInf extends AuthEvent {
+  FetchUserInf({this.userId});
+  final int? userId;
+}

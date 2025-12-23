@@ -1,17 +1,24 @@
 import 'package:ecommerce_task/core/sevices/app_route.dart';
 import 'package:ecommerce_task/core/constants/app_theme.dart';
+import 'package:ecommerce_task/features/feature_auth/data/data_source/auth_local_data.dart';
+import 'package:ecommerce_task/features/feature_auth/data/repositories_imp/auth_repository_imp.dart';
+import 'package:ecommerce_task/features/feature_auth/presentation/controllers/splash_controller/splash_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/bloc_observer.dart';
 import 'core/sevices/injection.dart';
 import 'features/feature_auth/presentation/controllers/auth_bloc.dart';
+import 'features/feature_home/presentation/controllers/cart_controller/cart_cubit.dart';
 import 'features/feature_home/presentation/controllers/product_controller/product_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await setupInjection();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   // if (kIsWeb){
   //   import 'package:flutter_web_plugins/flutter_web_plugins.dart';
   //   usePathUrlStrategy();
@@ -23,7 +30,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -33,6 +39,7 @@ class MyApp extends StatelessWidget {
           providers: [
             BlocProvider(create: (context) => getIt<AuthBloc>()),
             BlocProvider(create: (context) => getIt<ProductBloc>()),
+            BlocProvider(create: (context) => getIt<CartCubit>()),
           ],
           child: MaterialApp.router(
             debugShowCheckedModeBanner: false,

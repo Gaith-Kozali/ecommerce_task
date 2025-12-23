@@ -4,16 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_color.dart';
 import '../../../../core/constants/app_size.dart';
 import '../../../../core/constants/assets_path.dart';
 import '../../../../core/utils/screen_information.dart';
+import '../../../feature_auth/domain/entities/user.dart';
+import '../pages/cart_page.dart';
+import '../pages/user_profile_page.dart';
 import 'nav_button.dart';
 
 class CustomNavigationBar extends StatelessWidget {
   final AppSize appSize;
-
-  const CustomNavigationBar({super.key, required this.appSize});
+  final User? user;
+  const CustomNavigationBar({
+    super.key,
+    required this.appSize,
+    required this.user,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -63,20 +71,24 @@ class CustomNavigationBar extends StatelessWidget {
               ),
               AppSpacing.columnSmall,
               Text(
-                'Gaith_Ko',
+                user?.userName ?? "",
                 style: TextStyle(
                   color: AppColor.secondaryText,
                   fontWeight: FontWeight.w600,
                   fontSize: appSize.bodyFontSize,
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
               AppSpacing.columnXSmall,
               Text(
-                'gaith.kouzali@gmail.com',
+                user?.email ?? "",
                 style: TextStyle(
                   color: AppColor.secondaryText,
                   fontSize: appSize.slBodyFontSize,
                 ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ],
           ),
@@ -85,15 +97,16 @@ class CustomNavigationBar extends StatelessWidget {
               navButton(
                 icon: Icons.shopping_cart_outlined,
                 label: 'Cart',
-                onPressed: () {},
+                onPressed: () => context.push(CartPage.route),
               ),
-              const SizedBox(height: 16),
+              AppSpacing.columnMedium,
               navButton(
                 icon: Icons.person_outline,
                 label: 'Profile',
-                onPressed: () {},
+                onPressed:
+                    () => context.push(UserProfilePage.route, extra: user),
               ),
-              const SizedBox(height: 16),
+              AppSpacing.columnMedium,
               navButton(
                 icon: Icons.logout,
                 label: 'Logout',
