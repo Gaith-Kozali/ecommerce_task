@@ -8,8 +8,8 @@ class NetworkService {
   NetworkService({Map<String, dynamic>? headers}) {
     _dio = Dio(
       BaseOptions(
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
+        // connectTimeout: const Duration(seconds: 15),
+        // receiveTimeout: const Duration(seconds: 15),
         headers: headers ?? {'Content-Type': 'application/json'},
       ),
     );
